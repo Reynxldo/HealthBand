@@ -21,15 +21,15 @@
     body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
 
     /* LOGIN */
-    #login-screen { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:100; }
+    #login-screen { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px; }
     .login-bg { position:absolute; inset:0; background: radial-gradient(ellipse 60% 50% at 20% 50%,rgba(0,212,255,0.06) 0%,transparent 70%), radial-gradient(ellipse 40% 60% at 80% 30%,rgba(255,77,109,0.05) 0%,transparent 70%); }
     .login-grid { position:absolute; inset:0; background-image: linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px), linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px); background-size:40px 40px; }
-    .login-card { position:relative; width:420px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:48px; box-shadow:0 0 60px rgba(0,212,255,0.08),0 24px 48px rgba(0,0,0,0.4); }
-    .login-logo { display:flex; align-items:center; gap:12px; margin-bottom:40px; }
-    .login-logo-icon { width:44px; height:44px; background:linear-gradient(135deg,#ff4d6d,#ff8fa3); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 0 20px rgba(255,77,109,0.4); }
+    .login-card { position:relative; width:100%; max-width:420px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:40px; box-shadow:0 0 60px rgba(0,212,255,0.08),0 24px 48px rgba(0,0,0,0.4); }
+    .login-logo { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
+    .login-logo-icon { width:44px; height:44px; background:linear-gradient(135deg,#ff4d6d,#ff8fa3); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 0 20px rgba(255,77,109,0.4); flex-shrink:0; }
     .login-logo-text { font-family:'Space Mono',monospace; font-size:20px; font-weight:700; }
     .login-logo-text span { color:var(--accent); }
-    .login-subtitle { font-size:13px; color:var(--muted); margin-bottom:32px; line-height:1.5; }
+    .login-subtitle { font-size:13px; color:var(--muted); margin-bottom:28px; line-height:1.5; }
     .login-field { margin-bottom:16px; }
     .login-field label { display:block; font-size:12px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
     .login-field input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 16px; color:var(--text); font-family:'Space Mono',monospace; font-size:14px; outline:none; transition:border-color 0.2s; }
@@ -47,22 +47,22 @@
     #app { display:none; }
 
     /* HEADER */
-    header { background:var(--surface); padding:0 40px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:20px; position:sticky; top:0; z-index:10; height:60px; }
-    .header-logo { display:flex; align-items:center; gap:10px; flex-shrink:0; }
-    .header-logo-icon { width:30px; height:30px; background:linear-gradient(135deg,#ff4d6d,#ff8fa3); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; box-shadow:0 0 12px rgba(255,77,109,0.3); }
-    .header-logo h1 { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; white-space:nowrap; }
+    header { background:var(--surface); padding:0 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:10; height:56px; overflow-x:auto; }
+    .header-logo { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+    .header-logo-icon { width:28px; height:28px; background:linear-gradient(135deg,#ff4d6d,#ff8fa3); border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:12px; box-shadow:0 0 12px rgba(255,77,109,0.3); flex-shrink:0; }
+    .header-logo h1 { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; white-space:nowrap; }
     .header-logo h1 span { color:var(--accent); }
-    nav { display:flex; gap:4px; }
-    .nav-btn { background:none; border:none; padding:7px 14px; border-radius:8px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+    nav { display:flex; gap:2px; flex-shrink:0; }
+    .nav-btn { background:none; border:none; padding:6px 10px; border-radius:8px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
     .nav-btn:hover { color:var(--text); background:rgba(255,255,255,0.04); }
     .nav-btn.active { color:var(--accent); background:rgba(0,212,255,0.08); }
-    .header-right { display:flex; align-items:center; gap:12px; margin-left:auto; flex-shrink:0; }
-    .estado { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); }
-    .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation:blink 2s infinite; }
+    .header-right { display:flex; align-items:center; gap:8px; margin-left:auto; flex-shrink:0; }
+    .estado { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
+    .dot { width:7px; height:7px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation:blink 2s infinite; flex-shrink:0; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .user-badge { display:flex; align-items:center; gap:8px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:5px 12px; font-size:13px; }
+    .user-badge { display:flex; align-items:center; gap:6px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:4px 10px; font-size:12px; white-space:nowrap; }
     .user-badge span { color:var(--accent); font-weight:600; }
-    .logout-btn { background:none; border:1px solid var(--border); border-radius:8px; padding:5px 14px; color:var(--muted); font-size:13px; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+    .logout-btn { background:none; border:1px solid var(--border); border-radius:8px; padding:4px 10px; color:var(--muted); font-size:12px; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; white-space:nowrap; }
     .logout-btn:hover { border-color:var(--accent2); color:var(--accent2); }
 
     /* PAGES */
@@ -70,77 +70,111 @@
     .page.active { display:block; }
 
     /* MONITOREO */
-    .alerta-box { margin:20px 40px 0; background:rgba(255,77,109,0.1); border:1px solid rgba(255,77,109,0.4); border-radius:10px; padding:14px 20px; display:none; font-size:14px; }
+    .alerta-box { margin:16px 16px 0; background:rgba(255,77,109,0.1); border:1px solid rgba(255,77,109,0.4); border-radius:10px; padding:12px 16px; display:none; font-size:13px; }
     .alerta-box.visible { display:flex; align-items:center; gap:10px; }
-    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding:24px 40px; }
-    .card { background:var(--surface); border-radius:14px; padding:24px 28px; border:1px solid var(--border); position:relative; overflow:hidden; transition:transform 0.2s; }
-    .card:hover { transform:translateY(-2px); }
-    .card::before { content:''; position:absolute; inset:0; border-radius:14px; }
+
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:16px; }
+    .card { background:var(--surface); border-radius:12px; padding:18px; border:1px solid var(--border); position:relative; overflow:hidden; transition:transform 0.2s; }
+    .card::before { content:''; position:absolute; inset:0; border-radius:12px; }
     .card-bpm::before { background:rgba(255,77,109,0.08); }
     .card-spo2::before { background:rgba(0,212,255,0.08); }
     .card-temp::before { background:rgba(0,255,157,0.08); }
-    .card-label { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px; }
-    .card-value { font-family:'Space Mono',monospace; font-size:52px; font-weight:700; line-height:1; letter-spacing:-2px; }
-    .card-bpm .card-value { color:var(--accent2); text-shadow:0 0 30px rgba(255,77,109,0.3); }
-    .card-spo2 .card-value { color:var(--accent); text-shadow:0 0 30px rgba(0,212,255,0.3); }
-    .card-temp .card-value { color:var(--accent3); text-shadow:0 0 30px rgba(0,255,157,0.3); }
-    .card-unit { font-size:13px; color:var(--muted); margin-top:6px; }
-    .card-icon { position:absolute; right:24px; top:24px; font-size:28px; opacity:0.15; }
-    .charts { display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:0 40px 24px; }
-    .chart-card { background:var(--surface); border-radius:14px; padding:24px; border:1px solid var(--border); }
-    .chart-card h3 { font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:20px; }
-    .historial { margin:0 40px 40px; background:var(--surface); border-radius:14px; border:1px solid var(--border); overflow:hidden; }
-    .historial-header { padding:16px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-    .historial-header h3 { font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
-    .historial-badge { font-size:11px; font-family:'Space Mono',monospace; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:3px 10px; color:var(--muted); }
-    table { width:100%; border-collapse:collapse; font-size:13px; }
-    th { padding:10px 24px; text-align:left; color:var(--muted); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; border-bottom:1px solid var(--border); }
-    td { padding:12px 24px; border-bottom:1px solid rgba(30,45,69,0.5); font-family:'Space Mono',monospace; font-size:12px; }
+    .card-label { font-size:10px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; }
+    .card-value { font-family:'Space Mono',monospace; font-size:36px; font-weight:700; line-height:1; letter-spacing:-1px; }
+    .card-bpm .card-value { color:var(--accent2); text-shadow:0 0 20px rgba(255,77,109,0.3); }
+    .card-spo2 .card-value { color:var(--accent); text-shadow:0 0 20px rgba(0,212,255,0.3); }
+    .card-temp .card-value { color:var(--accent3); text-shadow:0 0 20px rgba(0,255,157,0.3); }
+    .card-unit { font-size:11px; color:var(--muted); margin-top:4px; }
+    .card-icon { position:absolute; right:14px; top:14px; font-size:20px; opacity:0.15; }
+
+    .charts { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 16px 16px; }
+    .chart-card { background:var(--surface); border-radius:12px; padding:16px; border:1px solid var(--border); }
+    .chart-card h3 { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px; }
+
+    .historial { margin:0 16px 24px; background:var(--surface); border-radius:12px; border:1px solid var(--border); overflow:hidden; }
+    .historial-header { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .historial-header h3 { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
+    .historial-badge { font-size:10px; font-family:'Space Mono',monospace; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:2px 8px; color:var(--muted); }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; font-size:12px; min-width:320px; }
+    th { padding:8px 12px; text-align:left; color:var(--muted); font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; border-bottom:1px solid var(--border); }
+    td { padding:10px 12px; border-bottom:1px solid rgba(30,45,69,0.5); font-family:'Space Mono',monospace; font-size:11px; }
     tr:last-child td { border-bottom:none; }
     tr:hover td { background:rgba(0,212,255,0.03); }
-    .td-bpm { color:var(--accent2); } .td-spo2 { color:var(--accent); } .td-temp { color:var(--accent3); } .td-time { color:var(--muted); font-size:11px; }
+    .td-bpm { color:var(--accent2); } .td-spo2 { color:var(--accent); } .td-temp { color:var(--accent3); } .td-time { color:var(--muted); font-size:10px; }
 
     /* RECOMENDACIONES */
-    .page-header { padding:40px 40px 24px; }
-    .page-header h2 { font-family:'Space Mono',monospace; font-size:22px; font-weight:700; margin-bottom:8px; }
-    .page-header p { color:var(--muted); font-size:14px; line-height:1.6; }
-    .rec-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:0 40px 24px; }
-    .rec-card { background:var(--surface); border-radius:14px; padding:28px; border:1px solid var(--border); position:relative; overflow:hidden; }
-    .rec-card::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:14px 14px 0 0; }
+    .page-header { padding:24px 16px 16px; }
+    .page-header h2 { font-family:'Space Mono',monospace; font-size:18px; font-weight:700; margin-bottom:6px; }
+    .page-header p { color:var(--muted); font-size:13px; line-height:1.6; }
+    .rec-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 16px 16px; }
+    .rec-card { background:var(--surface); border-radius:12px; padding:20px; border:1px solid var(--border); position:relative; overflow:hidden; }
+    .rec-card::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:12px 12px 0 0; }
     .rec-card.danger::after { background:linear-gradient(90deg,var(--accent2),#ff8fa3); }
     .rec-card.warning::after { background:linear-gradient(90deg,#f59e0b,#fcd34d); }
     .rec-card.cold::after { background:linear-gradient(90deg,#60a5fa,#93c5fd); }
     .rec-card.low::after { background:linear-gradient(90deg,var(--accent),#67e8f9); }
-    .rec-icon { font-size:32px; margin-bottom:16px; }
-    .rec-title { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; margin-bottom:6px; }
+    .rec-icon { font-size:26px; margin-bottom:12px; }
+    .rec-title { font-family:'Space Mono',monospace; font-size:13px; font-weight:700; margin-bottom:4px; }
     .rec-card.danger .rec-title { color:var(--accent2); }
     .rec-card.warning .rec-title { color:#f59e0b; }
     .rec-card.cold .rec-title { color:#60a5fa; }
     .rec-card.low .rec-title { color:var(--accent); }
-    .rec-trigger { font-size:12px; color:var(--muted); margin-bottom:16px; font-family:'Space Mono',monospace; }
-    .rec-steps { list-style:none; display:flex; flex-direction:column; gap:10px; }
-    .rec-steps li { font-size:13px; color:var(--text); line-height:1.5; padding-left:20px; position:relative; }
-    .rec-steps li::before { content:'→'; position:absolute; left:0; font-family:'Space Mono',monospace; font-size:11px; top:1px; }
+    .rec-trigger { font-size:11px; color:var(--muted); margin-bottom:12px; font-family:'Space Mono',monospace; }
+    .rec-steps { list-style:none; display:flex; flex-direction:column; gap:8px; }
+    .rec-steps li { font-size:12px; color:var(--text); line-height:1.5; padding-left:16px; position:relative; }
+    .rec-steps li::before { content:'→'; position:absolute; left:0; font-family:'Space Mono',monospace; font-size:10px; top:1px; }
     .rec-card.danger .rec-steps li::before { color:var(--accent2); }
     .rec-card.warning .rec-steps li::before { color:#f59e0b; }
     .rec-card.cold .rec-steps li::before { color:#60a5fa; }
     .rec-card.low .rec-steps li::before { color:var(--accent); }
-    .rec-disclaimer { margin:0 40px 40px; background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.15); border-radius:12px; padding:20px 24px; font-size:13px; color:var(--muted); line-height:1.6; }
+    .rec-disclaimer { margin:0 16px 24px; background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.15); border-radius:12px; padding:16px; font-size:12px; color:var(--muted); line-height:1.6; }
     .rec-disclaimer strong { color:var(--accent); }
 
     /* CONTACTO */
-    .contact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding:0 40px 24px; }
-    .contact-card { background:var(--surface); border-radius:14px; padding:32px; border:1px solid var(--border); text-align:center; transition:transform 0.2s; }
+    .contact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:0 16px 16px; }
+    .contact-card { background:var(--surface); border-radius:12px; padding:24px 16px; border:1px solid var(--border); text-align:center; transition:transform 0.2s; }
     .contact-card:hover { transform:translateY(-4px); border-color:rgba(0,212,255,0.3); }
-    .contact-avatar { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#0099cc); display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:22px; font-weight:700; color:#000; margin:0 auto 20px; box-shadow:0 0 24px rgba(0,212,255,0.25); }
-    .contact-name { font-family:'Space Mono',monospace; font-size:13px; font-weight:700; margin-bottom:4px; }
-    .contact-role { font-size:12px; color:var(--accent); margin-bottom:20px; font-weight:500; }
-    .contact-info { display:flex; flex-direction:column; gap:8px; }
-    .contact-row { display:flex; align-items:center; gap:8px; background:var(--bg); border-radius:8px; padding:8px 12px; font-size:12px; font-family:'Space Mono',monospace; color:var(--muted); }
-    .contact-uni { margin:0 40px 40px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:28px 32px; display:flex; align-items:center; gap:24px; }
-    .uni-icon { font-size:40px; }
-    .uni-text h4 { font-family:'Space Mono',monospace; font-size:15px; margin-bottom:6px; }
-    .uni-text p { font-size:13px; color:var(--muted); line-height:1.6; }
+    .contact-avatar { width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#0099cc); display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:18px; font-weight:700; color:#000; margin:0 auto 16px; box-shadow:0 0 20px rgba(0,212,255,0.25); }
+    .contact-name { font-family:'Space Mono',monospace; font-size:12px; font-weight:700; margin-bottom:4px; }
+    .contact-role { font-size:11px; color:var(--accent); margin-bottom:16px; font-weight:500; }
+    .contact-info { display:flex; flex-direction:column; gap:6px; }
+    .contact-row { display:flex; align-items:center; gap:6px; background:var(--bg); border-radius:8px; padding:6px 10px; font-size:11px; font-family:'Space Mono',monospace; color:var(--muted); word-break:break-all; }
+    .contact-uni { margin:0 16px 24px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; display:flex; align-items:center; gap:16px; }
+    .uni-icon { font-size:32px; flex-shrink:0; }
+    .uni-text h4 { font-family:'Space Mono',monospace; font-size:13px; margin-bottom:4px; }
+    .uni-text p { font-size:12px; color:var(--muted); line-height:1.6; }
+
+    /* RESPONSIVE MÓVIL */
+    @media (max-width: 640px) {
+      .login-card { padding:28px 20px; }
+      .login-logo-text { font-size:17px; }
+
+      header { padding:0 12px; gap:8px; }
+      .nav-btn { padding:5px 7px; font-size:11px; }
+      .user-badge { display:none; }
+
+      .grid { grid-template-columns:1fr; gap:10px; padding:12px; }
+      .card-value { font-size:44px; }
+      .card-icon { font-size:24px; }
+
+      .charts { grid-template-columns:1fr; gap:10px; padding:0 12px 12px; }
+
+      .historial { margin:0 12px 20px; }
+
+      .rec-grid { grid-template-columns:1fr; gap:10px; padding:0 12px 12px; }
+      .rec-disclaimer { margin:0 12px 20px; }
+
+      .contact-grid { grid-template-columns:1fr; gap:10px; padding:0 12px 12px; }
+      .contact-uni { margin:0 12px 20px; flex-direction:column; text-align:center; }
+
+      .page-header { padding:20px 12px 12px; }
+      .page-header h2 { font-size:16px; }
+    }
+
+    @media (max-width: 400px) {
+      .nav-btn span { display:none; }
+    }
   </style>
 </head>
 <body>
@@ -241,10 +275,12 @@
         <h3>Historial de lecturas</h3>
         <span class="historial-badge" id="historial-count">0 registros</span>
       </div>
-      <table>
-        <thead><tr><th>Hora</th><th>BPM</th><th>SpO2 %</th><th>Temperatura °C</th></tr></thead>
-        <tbody id="tabla-historial"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Hora</th><th>BPM</th><th>SpO2 %</th><th>Temp °C</th></tr></thead>
+          <tbody id="tabla-historial"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -252,60 +288,60 @@
   <div class="page" id="page-recomendaciones">
     <div class="page-header">
       <h2>Recomendaciones Médicas</h2>
-      <p>Guía de acción ante las alertas del sistema HealthBand. Siga estas recomendaciones mientras busca atención médica profesional.</p>
+      <p>Guía de acción ante las alertas del sistema HealthBand.</p>
     </div>
     <div class="rec-grid">
       <div class="rec-card danger">
         <div class="rec-icon">💓</div>
         <div class="rec-title">BPM Elevado</div>
-        <div class="rec-trigger">Alerta: frecuencia cardíaca &gt; 120 BPM</div>
+        <div class="rec-trigger">&gt; 120 BPM</div>
         <ul class="rec-steps">
-          <li>Detente y siéntate o recuéstate en un lugar seguro.</li>
-          <li>Respira profundo y lento: inhala 4 segundos, exhala 6 segundos.</li>
-          <li>Evita movimientos bruscos, cafeína o estímulos estresantes.</li>
-          <li>Toma agua fría si estás en un ambiente caluroso.</li>
-          <li>Si persiste más de 5 minutos o hay dolor en el pecho, llama a emergencias.</li>
+          <li>Detente y siéntate en un lugar seguro.</li>
+          <li>Respira profundo: inhala 4s, exhala 6s.</li>
+          <li>Evita movimientos bruscos y cafeína.</li>
+          <li>Toma agua fría si hay calor.</li>
+          <li>Si persiste más de 5 min, llama a emergencias.</li>
         </ul>
       </div>
       <div class="rec-card low">
         <div class="rec-icon">🫁</div>
         <div class="rec-title">SpO2 Crítico</div>
-        <div class="rec-trigger">Alerta: saturación de oxígeno &lt; 90%</div>
+        <div class="rec-trigger">&lt; 90%</div>
         <ul class="rec-steps">
-          <li>Busca aire fresco de inmediato, abre ventanas o sal al exterior.</li>
-          <li>Siéntate erguido para facilitar la respiración.</li>
-          <li>Respira profundo y de forma controlada, no hiperventiles.</li>
-          <li>Si tienes oxígeno suplementario disponible, úsalo.</li>
-          <li>Este es un signo de urgencia médica: busca atención inmediata.</li>
+          <li>Busca aire fresco de inmediato.</li>
+          <li>Siéntate erguido para respirar mejor.</li>
+          <li>Respira profundo y controlado.</li>
+          <li>Usa oxígeno suplementario si hay.</li>
+          <li>Urgencia médica: busca atención inmediata.</li>
         </ul>
       </div>
       <div class="rec-card cold">
         <div class="rec-icon">🥶</div>
         <div class="rec-title">Hipotermia</div>
-        <div class="rec-trigger">Alerta: temperatura corporal &lt; 35°C</div>
+        <div class="rec-trigger">&lt; 35°C</div>
         <ul class="rec-steps">
-          <li>Retira a la persona de la exposición al frío inmediatamente.</li>
-          <li>Cúbrela con mantas secas y cálidas, especialmente cabeza y cuello.</li>
-          <li>Ofrece bebidas calientes (no alcohol) si está consciente.</li>
-          <li>No frotes la piel con fuerza, puede causar daño en tejidos fríos.</li>
-          <li>Busca atención médica urgente, la hipotermia puede ser mortal.</li>
+          <li>Retira del frío inmediatamente.</li>
+          <li>Cubre con mantas secas y cálidas.</li>
+          <li>Ofrece bebidas calientes (no alcohol).</li>
+          <li>No frotes la piel con fuerza.</li>
+          <li>Busca atención médica urgente.</li>
         </ul>
       </div>
       <div class="rec-card warning">
         <div class="rec-icon">🌡️</div>
         <div class="rec-title">Temperatura Elevada</div>
-        <div class="rec-trigger">Alerta: temperatura corporal &gt; 37.5°C</div>
+        <div class="rec-trigger">&gt; 37.5°C</div>
         <ul class="rec-steps">
-          <li>Ubícate en un ambiente fresco y ventilado.</li>
-          <li>Hidratación inmediata: bebe agua o suero oral a pequeños sorbos.</li>
-          <li>Aplica paños húmedos fríos en frente, cuello y muñecas.</li>
-          <li>Evita ropa ajustada o gruesa, usa prendas ligeras.</li>
-          <li>Si la temperatura supera 38.5°C o hay confusión, busca atención médica.</li>
+          <li>Ve a un ambiente fresco y ventilado.</li>
+          <li>Hidratación: agua o suero oral.</li>
+          <li>Paños húmedos fríos en frente y cuello.</li>
+          <li>Usa ropa ligera.</li>
+          <li>Si supera 38.5°C, busca atención médica.</li>
         </ul>
       </div>
     </div>
     <div class="rec-disclaimer">
-      <strong>⚕️ Aviso importante:</strong> Las recomendaciones de este sistema son orientativas y no reemplazan el diagnóstico ni el tratamiento de un profesional de la salud. Ante cualquier emergencia médica, contacte al número de emergencias local <strong>(123 en Colombia)</strong> o acuda al centro de salud más cercano.
+      <strong>⚕️ Aviso:</strong> Estas recomendaciones son orientativas. Ante emergencias llame al <strong>123</strong> o acuda al centro de salud más cercano.
     </div>
   </div>
 
@@ -313,7 +349,7 @@
   <div class="page" id="page-contacto">
     <div class="page-header">
       <h2>Contáctanos</h2>
-      <p>Equipo de desarrollo del proyecto HealthBand — Ingeniería Electrónica, Universidad Surcolombiana.</p>
+      <p>Equipo de desarrollo — Ingeniería Electrónica, Universidad Surcolombiana.</p>
     </div>
     <div class="contact-grid">
       <div class="contact-card">
@@ -348,7 +384,7 @@
       <div class="uni-icon">🎓</div>
       <div class="uni-text">
         <h4>Universidad Surcolombiana — USCO</h4>
-        <p>Facultad de Ingeniería · Programa de Ingeniería Electrónica · Neiva, Huila, Colombia<br>Proyecto desarrollado como propuesta de monitoreo de signos vitales mediante IoT y sensores biomédicos.</p>
+        <p>Facultad de Ingeniería · Ingeniería Electrónica · Neiva, Huila, Colombia</p>
       </div>
     </div>
   </div>
@@ -402,12 +438,12 @@
     chartBpm = new Chart(document.getElementById('chartBpm'), {
       type: 'line',
       data: { labels: labelsBpm, datasets: [{ data: datasBpm, borderColor: '#ff4d6d', backgroundColor: 'rgba(255,77,109,0.08)', tension: 0.4, fill: true, pointRadius: 2, borderWidth: 2 }] },
-      options: { animation: false, scales: { y: { min:40, max:160, ticks:{ color:'#4a6080', font:{family:'Space Mono',size:10} }, grid:{color:'#1e2d45'} }, x: { ticks:{ color:'#4a6080', font:{family:'Space Mono',size:9}, maxTicksLimit:6 }, grid:{color:'#1e2d45'} } }, plugins:{ legend:{display:false} } }
+      options: { animation: false, scales: { y: { min:40, max:160, ticks:{ color:'#4a6080', font:{family:'Space Mono',size:9} }, grid:{color:'#1e2d45'} }, x: { ticks:{ color:'#4a6080', font:{family:'Space Mono',size:8}, maxTicksLimit:5 }, grid:{color:'#1e2d45'} } }, plugins:{ legend:{display:false} } }
     });
     chartSpo2 = new Chart(document.getElementById('chartSpo2'), {
       type: 'line',
       data: { labels: labelsSpo2, datasets: [{ data: datasSpo2, borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.08)', tension: 0.4, fill: true, pointRadius: 2, borderWidth: 2 }] },
-      options: { animation: false, scales: { y: { min:80, max:100, ticks:{ color:'#4a6080', font:{family:'Space Mono',size:10} }, grid:{color:'#1e2d45'} }, x: { ticks:{ color:'#4a6080', font:{family:'Space Mono',size:9}, maxTicksLimit:6 }, grid:{color:'#1e2d45'} } }, plugins:{ legend:{display:false} } }
+      options: { animation: false, scales: { y: { min:80, max:100, ticks:{ color:'#4a6080', font:{family:'Space Mono',size:9} }, grid:{color:'#1e2d45'} }, x: { ticks:{ color:'#4a6080', font:{family:'Space Mono',size:8}, maxTicksLimit:5 }, grid:{color:'#1e2d45'} } }, plugins:{ legend:{display:false} } }
     });
     cargarHistorial();
     setInterval(cargarHistorial, 10000);
