@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthBand — Monitor de Signos Vitales</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #070b14;
+      --surface: #0d1424;
+      --border: #1e2d45;
+      --accent: #00d4ff;
+      --accent2: #ff4d6d;
+      --accent3: #00ff9d;
+      --text: #e2e8f0;
+      --muted: #4a6080;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+
+    /* LOGIN */
+    #login-screen { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:100; }
+    .login-bg { position:absolute; inset:0; background: radial-gradient(ellipse 60% 50% at 20% 50%,rgba(0,212,255,0.06) 0%,transparent 70%), radial-gradient(ellipse 40% 60% at 80% 30%,rgba(255,77,109,0.05) 0%,transparent 70%); }
+    .login-grid { position:absolute; inset:0; background-image: linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px), linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px); background-size:40px 40px; }
+    .login-card { position:relative; width:420px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:48px; box-shadow:0 0 60px rgba(0,212,255,0.08),0 24px 48px rgba(0,0,0,0.4); }
+    .login-logo { display:flex; align-items:center; gap:12px; margin-bottom:40px; }
+    .login-logo-icon { width:44px; height:44px; background:linear-gradient(135deg,#ff4d6d,#ff8fa3); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 0 20px rgba(255,77,109,0.4); }
+    .login-logo-text { font-family:'Space Mono',monospace; font-size:20px; font-weight:700; }
+    .login-logo-text span { color:var(--accent); }
+    .login-subtitle { font-size:13px; color:var(--muted); margin-bottom:32px; line-height:1.5; }
+    .login-field { margin-bottom:16px; }
+    .login-field label { display:block; font-size:12px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+    .login-field input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 16px; color:var(--text); font-family:'Space Mono',monospace; font-size:14px; outline:none; transition:border-color 0.2s; }
+    .login-field input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,212,255,0.1); }
+    .login-error { font-size:13px; color:var(--accent2); margin-bottom:16px; display:none; padding:10px 14px; background:rgba(255,77,109,0.1); border-radius:8px; border:1px solid rgba(255,77,109,0.2); }
+    .login-btn { width:100%; background:linear-gradient(135deg,var(--accent),#0099cc); border:none; border-radius:8px; padding:14px; color:#000; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; transition:opacity 0.2s,transform 0.1s; margin-top:8px; }
+    .login-btn:hover { opacity:0.9; transform:translateY(-1px); }
+    .login-users { margin-top:24px; padding-top:24px; border-top:1px solid var(--border); }
+    .login-users p { font-size:12px; color:var(--muted); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.06em; }
+    .user-chips { display:flex; gap:8px; flex-wrap:wrap; }
+    .user-chip { font-size:11px; font-family:'Space Mono',monospace; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:5px 10px; color:var(--muted); cursor:pointer; transition:all 0.2s; }
+    .user-chip:hover { border-color:var(--accent); color:var(--accent); }
+
+    /* APP */
+    #app { display:none; }
+
+    /* HEADER */
+    header { background:var(--surface); padding:0 40px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:20px; position:sticky; top:0; z-index:10; height:60px; }
+    .header-logo { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+    .header-logo-icon { width:30px; height:30px; background:linear-gradient(135deg,#ff4d6d,#ff8fa3); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; box-shadow:0 0 12px rgba(255,77,109,0.3); }
+    .header-logo h1 { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; white-space:nowrap; }
+    .header-logo h1 span { color:var(--accent); }
+    nav { display:flex; gap:4px; }
+    .nav-btn { background:none; border:none; padding:7px 14px; border-radius:8px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+    .nav-btn:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+    .nav-btn.active { color:var(--accent); background:rgba(0,212,255,0.08); }
+    .header-right { display:flex; align-items:center; gap:12px; margin-left:auto; flex-shrink:0; }
+    .estado { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); }
+    .dot { width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation:blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .user-badge { display:flex; align-items:center; gap:8px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:5px 12px; font-size:13px; }
+    .user-badge span { color:var(--accent); font-weight:600; }
+    .logout-btn { background:none; border:1px solid var(--border); border-radius:8px; padding:5px 14px; color:var(--muted); font-size:13px; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+    .logout-btn:hover { border-color:var(--accent2); color:var(--accent2); }
+
+    /* PAGES */
+    .page { display:none; }
+    .page.active { display:block; }
+
+    /* MONITOREO */
+    .alerta-box { margin:20px 40px 0; background:rgba(255,77,109,0.1); border:1px solid rgba(255,77,109,0.4); border-radius:10px; padding:14px 20px; display:none; font-size:14px; }
+    .alerta-box.visible { display:flex; align-items:center; gap:10px; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding:24px 40px; }
+    .card { background:var(--surface); border-radius:14px; padding:24px 28px; border:1px solid var(--border); position:relative; overflow:hidden; transition:transform 0.2s; }
+    .card:hover { transform:translateY(-2px); }
+    .card::before { content:''; position:absolute; inset:0; border-radius:14px; }
+    .card-bpm::before { background:rgba(255,77,109,0.08); }
+    .card-spo2::before { background:rgba(0,212,255,0.08); }
+    .card-temp::before { background:rgba(0,255,157,0.08); }
+    .card-label { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px; }
+    .card-value { font-family:'Space Mono',monospace; font-size:52px; font-weight:700; line-height:1; letter-spacing:-2px; }
+    .card-bpm .card-value { color:var(--accent2); text-shadow:0 0 30px rgba(255,77,109,0.3); }
+    .card-spo2 .card-value { color:var(--accent); text-shadow:0 0 30px rgba(0,212,255,0.3); }
+    .card-temp .card-value { color:var(--accent3); text-shadow:0 0 30px rgba(0,255,157,0.3); }
+    .card-unit { font-size:13px; color:var(--muted); margin-top:6px; }
+    .card-icon { position:absolute; right:24px; top:24px; font-size:28px; opacity:0.15; }
+    .charts { display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:0 40px 24px; }
+    .chart-card { background:var(--surface); border-radius:14px; padding:24px; border:1px solid var(--border); }
+    .chart-card h3 { font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:20px; }
+    .historial { margin:0 40px 40px; background:var(--surface); border-radius:14px; border:1px solid var(--border); overflow:hidden; }
+    .historial-header { padding:16px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .historial-header h3 { font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
+    .historial-badge { font-size:11px; font-family:'Space Mono',monospace; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:3px 10px; color:var(--muted); }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th { padding:10px 24px; text-align:left; color:var(--muted); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; border-bottom:1px solid var(--border); }
+    td { padding:12px 24px; border-bottom:1px solid rgba(30,45,69,0.5); font-family:'Space Mono',monospace; font-size:12px; }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:rgba(0,212,255,0.03); }
+    .td-bpm { color:var(--accent2); } .td-spo2 { color:var(--accent); } .td-temp { color:var(--accent3); } .td-time { color:var(--muted); font-size:11px; }
+
+    /* RECOMENDACIONES */
+    .page-header { padding:40px 40px 24px; }
+    .page-header h2 { font-family:'Space Mono',monospace; font-size:22px; font-weight:700; margin-bottom:8px; }
+    .page-header p { color:var(--muted); font-size:14px; line-height:1.6; }
+    .rec-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:0 40px 24px; }
+    .rec-card { background:var(--surface); border-radius:14px; padding:28px; border:1px solid var(--border); position:relative; overflow:hidden; }
+    .rec-card::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:14px 14px 0 0; }
+    .rec-card.danger::after { background:linear-gradient(90deg,var(--accent2),#ff8fa3); }
+    .rec-card.warning::after { background:linear-gradient(90deg,#f59e0b,#fcd34d); }
+    .rec-card.cold::after { background:linear-gradient(90deg,#60a5fa,#93c5fd); }
+    .rec-card.low::after { background:linear-gradient(90deg,var(--accent),#67e8f9); }
+    .rec-icon { font-size:32px; margin-bottom:16px; }
+    .rec-title { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; margin-bottom:6px; }
+    .rec-card.danger .rec-title { color:var(--accent2); }
+    .rec-card.warning .rec-title { color:#f59e0b; }
+    .rec-card.cold .rec-title { color:#60a5fa; }
+    .rec-card.low .rec-title { color:var(--accent); }
+    .rec-trigger { font-size:12px; color:var(--muted); margin-bottom:16px; font-family:'Space Mono',monospace; }
+    .rec-steps { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .rec-steps li { font-size:13px; color:var(--text); line-height:1.5; padding-left:20px; position:relative; }
+    .rec-steps li::before { content:'→'; position:absolute; left:0; font-family:'Space Mono',monospace; font-size:11px; top:1px; }
+    .rec-card.danger .rec-steps li::before { color:var(--accent2); }
+    .rec-card.warning .rec-steps li::before { color:#f59e0b; }
+    .rec-card.cold .rec-steps li::before { color:#60a5fa; }
+    .rec-card.low .rec-steps li::before { color:var(--accent); }
+    .rec-disclaimer { margin:0 40px 40px; background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.15); border-radius:12px; padding:20px 24px; font-size:13px; color:var(--muted); line-height:1.6; }
+    .rec-disclaimer strong { color:var(--accent); }
+
+    /* CONTACTO */
+    .contact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding:0 40px 24px; }
+    .contact-card { background:var(--surface); border-radius:14px; padding:32px; border:1px solid var(--border); text-align:center; transition:transform 0.2s; }
+    .contact-card:hover { transform:translateY(-4px); border-color:rgba(0,212,255,0.3); }
+    .contact-avatar { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#0099cc); display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:22px; font-weight:700; color:#000; margin:0 auto 20px; box-shadow:0 0 24px rgba(0,212,255,0.25); }
+    .contact-name { font-family:'Space Mono',monospace; font-size:13px; font-weight:700; margin-bottom:4px; }
+    .contact-role { font-size:12px; color:var(--accent); margin-bottom:20px; font-weight:500; }
+    .contact-info { display:flex; flex-direction:column; gap:8px; }
+    .contact-row { display:flex; align-items:center; gap:8px; background:var(--bg); border-radius:8px; padding:8px 12px; font-size:12px; font-family:'Space Mono',monospace; color:var(--muted); }
+    .contact-uni { margin:0 40px 40px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:28px 32px; display:flex; align-items:center; gap:24px; }
+    .uni-icon { font-size:40px; }
+    .uni-text h4 { font-family:'Space Mono',monospace; font-size:15px; margin-bottom:6px; }
+    .uni-text p { font-size:13px; color:var(--muted); line-height:1.6; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-grid"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">❤️</div>
+      <div>
+        <div class="login-logo-text">Health<span>Band</span></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Monitor de Signos Vitales</div>
+      </div>
+    </div>
+    <p class="login-subtitle">Accede al sistema de monitoreo en tiempo real de signos vitales.</p>
+    <div class="login-field">
+      <label>Usuario</label>
+      <input type="text" id="login-user" placeholder="usuario" autocomplete="off">
+    </div>
+    <div class="login-field">
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" placeholder="••••••••">
+    </div>
+    <div class="login-error" id="login-error">Usuario o contraseña incorrectos</div>
+    <button class="login-btn" onclick="intentarLogin()">Iniciar sesión</button>
+    <div class="login-users">
+      <p>Accesos de prueba</p>
+      <div class="user-chips">
+        <div class="user-chip" onclick="autoFill('admin','1234')">admin / 1234</div>
+        <div class="user-chip" onclick="autoFill('doctor','med123')">doctor / med123</div>
+        <div class="user-chip" onclick="autoFill('paciente','pac456')">paciente / pac456</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="header-logo">
+      <div class="header-logo-icon">❤️</div>
+      <h1>Health<span>Band</span></h1>
+    </div>
+    <nav>
+      <button class="nav-btn active" onclick="navegar('monitoreo',this)">📊 Monitoreo</button>
+      <button class="nav-btn" onclick="navegar('recomendaciones',this)">🩺 Recomendaciones</button>
+      <button class="nav-btn" onclick="navegar('contacto',this)">👥 Contáctanos</button>
+    </nav>
+    <div class="header-right">
+      <div class="estado">
+        <div class="dot" id="dot"></div>
+        <span id="estado-texto">Conectando...</span>
+      </div>
+      <div class="user-badge">👤 <span id="nombre-usuario"></span></div>
+      <button class="logout-btn" onclick="cerrarSesion()">Salir</button>
+    </div>
+  </header>
+
+  <!-- MONITOREO -->
+  <div class="page active" id="page-monitoreo">
+    <div class="alerta-box" id="alerta-box">
+      ⚠️ <strong style="color:var(--accent2)">Alerta:</strong>&nbsp;<span id="alerta-texto"></span>
+    </div>
+    <div class="grid">
+      <div class="card card-bpm">
+        <div class="card-icon">💓</div>
+        <div class="card-label">Ritmo Cardíaco</div>
+        <div class="card-value" id="bpm">--</div>
+        <div class="card-unit">BPM</div>
+      </div>
+      <div class="card card-spo2">
+        <div class="card-icon">🫁</div>
+        <div class="card-label">Saturación O₂</div>
+        <div class="card-value" id="spo2">--</div>
+        <div class="card-unit">SpO2 %</div>
+      </div>
+      <div class="card card-temp">
+        <div class="card-icon">🌡️</div>
+        <div class="card-label">Temperatura</div>
+        <div class="card-value" id="temp">--</div>
+        <div class="card-unit">°C</div>
+      </div>
+    </div>
+    <div class="charts">
+      <div class="chart-card">
+        <h3>Ritmo Cardíaco — últimas lecturas</h3>
+        <canvas id="chartBpm"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>SpO2 — últimas lecturas</h3>
+        <canvas id="chartSpo2"></canvas>
+      </div>
+    </div>
+    <div class="historial">
+      <div class="historial-header">
+        <h3>Historial de lecturas</h3>
+        <span class="historial-badge" id="historial-count">0 registros</span>
+      </div>
+      <table>
+        <thead><tr><th>Hora</th><th>BPM</th><th>SpO2 %</th><th>Temperatura °C</th></tr></thead>
+        <tbody id="tabla-historial"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RECOMENDACIONES -->
+  <div class="page" id="page-recomendaciones">
+    <div class="page-header">
+      <h2>Recomendaciones Médicas</h2>
+      <p>Guía de acción ante las alertas del sistema HealthBand. Siga estas recomendaciones mientras busca atención médica profesional.</p>
+    </div>
+    <div class="rec-grid">
+      <div class="rec-card danger">
+        <div class="rec-icon">💓</div>
+        <div class="rec-title">BPM Elevado</div>
+        <div class="rec-trigger">Alerta: frecuencia cardíaca &gt; 120 BPM</div>
+        <ul class="rec-steps">
+          <li>Detente y siéntate o recuéstate en un lugar seguro.</li>
+          <li>Respira profundo y lento: inhala 4 segundos, exhala 6 segundos.</li>
+          <li>Evita movimientos bruscos, cafeína o estímulos estresantes.</li>
+          <li>Toma agua fría si estás en un ambiente caluroso.</li>
+          <li>Si persiste más de 5 minutos o hay dolor en el pecho, llama a emergencias.</li>
+        </ul>
+      </div>
+      <div class="rec-card low">
+        <div class="rec-icon">🫁</div>
+        <div class="rec-title">SpO2 Crítico</div>
+        <div class="rec-trigger">Alerta: saturación de oxígeno &lt; 90%</div>
+        <ul class="rec-steps">
+          <li>Busca aire fresco de inmediato, abre ventanas o sal al exterior.</li>
+          <li>Siéntate erguido para facilitar la respiración.</li>
+          <li>Respira profundo y de forma controlada, no hiperventiles.</li>
+          <li>Si tienes oxígeno suplementario disponible, úsalo.</li>
+          <li>Este es un signo de urgencia médica: busca atención inmediata.</li>
+        </ul>
+      </div>
+      <div class="rec-card cold">
+        <div class="rec-icon">🥶</div>
+        <div class="rec-title">Hipotermia</div>
+        <div class="rec-trigger">Alerta: temperatura corporal &lt; 35°C</div>
+        <ul class="rec-steps">
+          <li>Retira a la persona de la exposición al frío inmediatamente.</li>
+          <li>Cúbrela con mantas secas y cálidas, especialmente cabeza y cuello.</li>
+          <li>Ofrece bebidas calientes (no alcohol) si está consciente.</li>
+          <li>No frotes la piel con fuerza, puede causar daño en tejidos fríos.</li>
+          <li>Busca atención médica urgente, la hipotermia puede ser mortal.</li>
+        </ul>
+      </div>
+      <div class="rec-card warning">
+        <div class="rec-icon">🌡️</div>
+        <div class="rec-title">Temperatura Elevada</div>
+        <div class="rec-trigger">Alerta: temperatura corporal &gt; 37.5°C</div>
+        <ul class="rec-steps">
+          <li>Ubícate en un ambiente fresco y ventilado.</li>
+          <li>Hidratación inmediata: bebe agua o suero oral a pequeños sorbos.</li>
+          <li>Aplica paños húmedos fríos en frente, cuello y muñecas.</li>
+          <li>Evita ropa ajustada o gruesa, usa prendas ligeras.</li>
+          <li>Si la temperatura supera 38.5°C o hay confusión, busca atención médica.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="rec-disclaimer">
+      <strong>⚕️ Aviso importante:</strong> Las recomendaciones de este sistema son orientativas y no reemplazan el diagnóstico ni el tratamiento de un profesional de la salud. Ante cualquier emergencia médica, contacte al número de emergencias local <strong>(123 en Colombia)</strong> o acuda al centro de salud más cercano.
+    </div>
+  </div>
+
+  <!-- CONTACTO -->
+  <div class="page" id="page-contacto">
+    <div class="page-header">
+      <h2>Contáctanos</h2>
+      <p>Equipo de desarrollo del proyecto HealthBand — Ingeniería Electrónica, Universidad Surcolombiana.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-avatar">RM</div>
+        <div class="contact-name">Reynaldo Medina Cabrera</div>
+        <div class="contact-role">Ing. Electrónico</div>
+        <div class="contact-info">
+          <div class="contact-row"><span>📞</span><span>316 636 0255</span></div>
+          <div class="contact-row"><span>✉️</span><span>u20241221327@usco.edu.co</span></div>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-avatar">JU</div>
+        <div class="contact-name">Juan Andrés Urrea</div>
+        <div class="contact-role">Ing. Electrónico</div>
+        <div class="contact-info">
+          <div class="contact-row"><span>📞</span><span>310 690 9928</span></div>
+          <div class="contact-row"><span>✉️</span><span>u20241223061@usco.edu.co</span></div>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-avatar">SP</div>
+        <div class="contact-name">Samuel Pérez Chinchilla</div>
+        <div class="contact-role">Ing. Electrónico</div>
+        <div class="contact-info">
+          <div class="contact-row"><span>📞</span><span>301 420 9385</span></div>
+          <div class="contact-row"><span>✉️</span><span>u20241222057@usco.edu.co</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-uni">
+      <div class="uni-icon">🎓</div>
+      <div class="uni-text">
+        <h4>Universidad Surcolombiana — USCO</h4>
+        <p>Facultad de Ingeniería · Programa de Ingeniería Electrónica · Neiva, Huila, Colombia<br>Proyecto desarrollado como propuesta de monitoreo de signos vitales mediante IoT y sensores biomédicos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const usuarios = {
+    admin:    { pass:'1234',   nombre:'Admin' },
+    doctor:   { pass:'med123', nombre:'Dr. García' },
+    paciente: { pass:'pac456', nombre:'Paciente' }
+  };
+
+  function autoFill(u, p) {
+    document.getElementById('login-user').value = u;
+    document.getElementById('login-pass').value = p;
+  }
+
+  function intentarLogin() {
+    const user = document.getElementById('login-user').value.trim();
+    const pass = document.getElementById('login-pass').value;
+    const err  = document.getElementById('login-error');
+    if (usuarios[user] && usuarios[user].pass === pass) {
+      err.style.display = 'none';
+      document.getElementById('nombre-usuario').textContent = usuarios[user].nombre;
+      const ls = document.getElementById('login-screen');
+      ls.style.transition = 'opacity 0.4s'; ls.style.opacity = '0';
+      setTimeout(() => { ls.style.display = 'none'; document.getElementById('app').style.display = 'block'; iniciarDashboard(); }, 400);
+    } else {
+      err.style.display = 'block';
+    }
+  }
+
+  function cerrarSesion() { location.reload(); }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') intentarLogin(); });
+  });
+
+  function navegar(pagina, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + pagina).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  const maxPuntos = 20;
+  const labelsBpm = [], datasBpm = [], labelsSpo2 = [], datasSpo2 = [];
+  let chartBpm, chartSpo2;
+
+  function iniciarDashboard() {
+    chartBpm = new Chart(document.getElementById('chartBpm'), {
+      type: 'line',
+      data: { labels: labelsBpm, datasets: [{ data: datasBpm, borderColor: '#ff4d6d', backgroundColor: 'rgba(255,77,109,0.08)', tension: 0.4, fill: true, pointRadius: 2, borderWidth: 2 }] },
+      options: { animation: false, scales: { y: { min:40, max:160, ticks:{ color:'#4a6080', font:{family:'Space Mono',size:10} }, grid:{color:'#1e2d45'} }, x: { ticks:{ color:'#4a6080', font:{family:'Space Mono',size:9}, maxTicksLimit:6 }, grid:{color:'#1e2d45'} } }, plugins:{ legend:{display:false} } }
+    });
+    chartSpo2 = new Chart(document.getElementById('chartSpo2'), {
+      type: 'line',
+      data: { labels: labelsSpo2, datasets: [{ data: datasSpo2, borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.08)', tension: 0.4, fill: true, pointRadius: 2, borderWidth: 2 }] },
+      options: { animation: false, scales: { y: { min:80, max:100, ticks:{ color:'#4a6080', font:{family:'Space Mono',size:10} }, grid:{color:'#1e2d45'} }, x: { ticks:{ color:'#4a6080', font:{family:'Space Mono',size:9}, maxTicksLimit:6 }, grid:{color:'#1e2d45'} } }, plugins:{ legend:{display:false} } }
+    });
+    cargarHistorial();
+    setInterval(cargarHistorial, 10000);
+    conectarWS();
+  }
+
+  function agregarPunto(labels, datas, valor, chart) {
+    labels.push(new Date().toLocaleTimeString());
+    datas.push(valor);
+    if (labels.length > maxPuntos) { labels.shift(); datas.shift(); }
+    chart.update();
+  }
+
+  function cargarHistorial() {
+    fetch('/api/historial').then(r => r.json()).then(rows => {
+      document.getElementById('historial-count').textContent = rows.length + ' registros';
+      document.getElementById('tabla-historial').innerHTML = rows.map(r => `
+        <tr>
+          <td class="td-time">${new Date(r.timestamp).toLocaleString()}</td>
+          <td class="td-bpm">${parseFloat(r.bpm).toFixed(1)}</td>
+          <td class="td-spo2">${parseFloat(r.spo2).toFixed(1)}</td>
+          <td class="td-temp">${parseFloat(r.temperatura).toFixed(1)}</td>
+        </tr>`).join('');
+    }).catch(() => {});
+  }
+
+  function conectarWS() {
+    const ws = new WebSocket('ws://localhost:3000');
+    ws.onopen = () => {
+      document.getElementById('estado-texto').textContent = 'Conectado';
+      document.getElementById('dot').style.cssText = 'background:#22c55e;box-shadow:0 0 8px #22c55e';
+    };
+    ws.onclose = () => {
+      document.getElementById('estado-texto').textContent = 'Desconectado';
+      document.getElementById('dot').style.cssText = 'background:#ef4444;box-shadow:0 0 8px #ef4444';
+      setTimeout(conectarWS, 3000);
+    };
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.tipo === 'alerta') {
+        const box = document.getElementById('alerta-box');
+        document.getElementById('alerta-texto').textContent = data.mensaje;
+        box.classList.add('visible');
+        setTimeout(() => box.classList.remove('visible'), 10000);
+        return;
+      }
+      if (data.bpm > 0) { document.getElementById('bpm').textContent = data.bpm.toFixed(1); agregarPunto(labelsBpm, datasBpm, data.bpm, chartBpm); }
+      if (data.spo2 > 0) { document.getElementById('spo2').textContent = data.spo2.toFixed(1); agregarPunto(labelsSpo2, datasSpo2, data.spo2, chartSpo2); }
+      if (data.temperatura > 0) { document.getElementById('temp').textContent = data.temperatura.toFixed(1); }
+    };
+  }
+</script>
+</body>
+</html>
