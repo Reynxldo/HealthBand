@@ -1,4 +1,10 @@
 {
+  "name": "healthband",
+  "version": "1.0.0",
+  "main": "servidor.js",
+  "scripts": {
+    "start": "node servidor.js"
+  },
   "dependencies": {
     "express": "^5.2.1",
     "mqtt": "^5.15.1",
