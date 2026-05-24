@@ -1,7 +1,6 @@
 const mqtt = require('mqtt');
 const express = require('express');
 const WebSocket = require('ws');
-const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const https = require('https');
 
@@ -18,46 +17,26 @@ function enviarTelegram(mensaje) {
   });
 }
 
-// Base de datos
-const db = new sqlite3.Database('./healthband.db');
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS lecturas (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    bpm REAL,
-    spo2 REAL,
-    temperatura REAL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
-  db.run(`CREATE TABLE IF NOT EXISTS alertas (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    tipo TEXT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
-});
+// Almacenamiento en memoria
+const lecturas = [];
+const alertas = [];
 
 // Express
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// API para obtener historial
 app.get('/api/historial', (req, res) => {
-  db.all('SELECT * FROM lecturas ORDER BY timestamp DESC LIMIT 50', [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
+  res.json(lecturas.slice(-50).reverse());
 });
 
 app.get('/api/alertas', (req, res) => {
-  db.all('SELECT * FROM alertas ORDER BY timestamp DESC LIMIT 20', [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
+  res.json(alertas.slice(-20).reverse());
 });
 
-// Servidor HTTP
-const server = app.listen(3000, () => {
-  console.log('Servidor corriendo en http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 
 // WebSocket
@@ -100,17 +79,20 @@ mqttClient.on('message', (topic, message) => {
 
   if (topic === 'pulsera/alerta') {
     const alerta = message.toString();
-    db.run('INSERT INTO alertas (tipo) VALUES (?)', [alerta]);
+    alertas.push({ tipo: alerta, timestamp: new Date().toISOString() });
     broadcast({ tipo: 'alerta', mensaje: alerta });
     enviarTelegram(`⚠️ <b>Alerta VitalCore</b>\n\n<b>${alerta}</b>\n\nBPM: ${ultimosDatos.bpm}\nSpO2: ${ultimosDatos.spo2}%\nTemp: ${ultimosDatos.temperatura}°C`);
     return;
   }
 
   if (ultimosDatos.bpm > 0 && ultimosDatos.spo2 > 0 && ultimosDatos.temperatura > 0) {
-    db.run(
-      'INSERT INTO lecturas (bpm, spo2, temperatura) VALUES (?, ?, ?)',
-      [ultimosDatos.bpm, ultimosDatos.spo2, ultimosDatos.temperatura]
-    );
+    lecturas.push({
+      bpm: ultimosDatos.bpm,
+      spo2: ultimosDatos.spo2,
+      temperatura: ultimosDatos.temperatura,
+      timestamp: new Date().toISOString()
+    });
+    if (lecturas.length > 500) lecturas.shift();
   }
 
   broadcast({ tipo: 'datos', ...ultimosDatos });
@@ -119,8 +101,3 @@ mqttClient.on('message', (topic, message) => {
 mqttClient.on('error', (err) => {
   console.error('Error MQTT:', err.message);
 });
-
-// Prueba inmediata al arrancar
-setTimeout(() => {
-  enviarTelegram('🧪 Prueba VitalCore — bot funcionando');
-}, 3000);
