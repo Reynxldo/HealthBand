@@ -435,7 +435,7 @@
   }
 
   function conectarWS() {
-    const ws = new WebSocket('ws://localhost:3000');
+    const ws = new WebSocket('wss://healthband-production.up.railway.app');
     ws.onopen = () => {
       document.getElementById('estado-texto').textContent = 'Conectado';
       document.getElementById('dot').style.cssText = 'background:#22c55e;box-shadow:0 0 8px #22c55e';
