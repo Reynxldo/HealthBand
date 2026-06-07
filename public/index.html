@@ -566,7 +566,7 @@
   }
 
   function conectarWS() {
-    const ws = new WebSocket('wss://healthband-production.up.railway.app');
+    const ws = new WebSocket('wss://healthband-kaz7.onrender.com');
     ws.onopen = () => {
       document.getElementById('estado-texto').textContent = 'Conectado';
       document.getElementById('dot').style.cssText = 'background:#22c55e;box-shadow:0 0 6px #22c55e';

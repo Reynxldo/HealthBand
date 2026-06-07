@@ -6,8 +6,8 @@
 #include <WiFiClientSecure.h>
 
 // WiFi
-const char* ssid     = "Moto 123";
-const char* password = "1075794008";
+const char* ssid     = "iPhone de Samuel";
+const char* password = "samuel01";
 
 // HiveMQ
 const char* mqtt_server   = "561ca56c1b5a4b978b24893f8b8a49c4.s1.eu.hivemq.cloud";
@@ -321,7 +321,7 @@ void loop() {
 
     Serial.print("Temperatura: "); Serial.print(temp, 1); Serial.print(" °C");
 
-    if (temp < 34.0) {
+    if (temp < 20.0) {
       Serial.println("  → Sin contacto");
       tempAltaActiva = false;
       tempBajaActiva = false;
